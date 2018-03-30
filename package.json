@@ -1,0 +1,24 @@
+{
+  "name": "auth-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Saad",
+  "license": "ISC",
+  "dependencies": {
+    "amazon-cognito-identity-js": "^2.0.2",
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.12",
+    "node-fetch": "^2.1.2",
+    "passport": "^0.4.0",
+    "passport-cognito": "^0.1.10",
+    "validator": "^9.4.1"
+  }
+}
