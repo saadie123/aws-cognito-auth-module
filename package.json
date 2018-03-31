@@ -11,8 +11,8 @@
     "server": "nodemon index.js",
     "client": "npm run dev --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-prebuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client",
-    "heroku-postbuild": "npm run build --prefix client"
+    "client-build": "npm install --prefix client",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-build  && npm run build --prefix client"
   },
   "author": "Saad",
   "license": "ISC",
