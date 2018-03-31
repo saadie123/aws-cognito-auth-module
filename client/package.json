@@ -9,7 +9,7 @@
   },
   "author": "Saad",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "^8.2.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
@@ -23,9 +23,7 @@
     "style-loader": "^0.20.3",
     "url-loader": "^1.0.1",
     "webpack": "^4.2.0",
-    "webpack-cli": "^2.0.13"
-  },
-  "dependencies": {
+    "webpack-cli": "^2.0.13",
     "axios": "^0.18.0",
     "bootstrap": "^4.0.0",
     "react": "^16.2.0",
