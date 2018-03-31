@@ -2,7 +2,6 @@ const path = require('path');
 const autoprefixer = require('autoprefixer');
 
 module.exports = {
-    mode: 'development',
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'public'),
