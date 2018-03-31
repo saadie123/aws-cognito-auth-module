@@ -30,7 +30,7 @@ router.get('/success', (req, res) => {
 });
 
 router.get('/fail', (req,res)=>{
-    res.status(400).send(req.flash('error'));
+    res.status(400).send({errors:req.flash('error')});
 });
 
 router.get('/logout', (req, res)=>{
