@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -20,8 +21,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname,'client','public')));
 
 app.use('/auth', authRoutes);
+
+app.use('*', (req, res)=>{
+    res.redirect('/');
+});
 
 const port = process.env.PORT || 5050;
 app.listen(port, () => {

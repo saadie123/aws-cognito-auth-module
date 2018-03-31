@@ -3,6 +3,7 @@ const amazonCognito = require('amazon-cognito-identity-js');
 const passport = require('passport');
 const CognitoStrategy = require('passport-cognito');
 const User = require('../models/User');
+const {poolData}  = require('../config/userPool');
 
 const router = express.Router();
 
@@ -18,20 +19,35 @@ passport.deserializeUser((user, done) => {
 });
 
 router.get('/current-user', (req ,res)=> {
+    if(!req.user){
+        return res.status(401).send({message: 'You are not logged in!'});
+    }
     res.send(req.user);
 });
 
 router.get('/success', (req, res) => {
-    res.status(200).send({message: "You are successfully logged in!"})
+    res.status(200).send({user:req.user,message: "You are successfully logged in!"})
 });
 
 router.get('/fail', (req,res)=>{
     res.status(400).send(req.flash('error'));
-})
+});
+
+router.get('/logout', (req, res)=>{
+    const userPool = new amazonCognito.CognitoUserPool(poolData);
+    const userData = {
+        Username : req.user.username,
+        Pool : userPool
+    };
+    const cognitoUser = new amazonCognito.CognitoUser(userData);
+    cognitoUser.signOut();
+    req.logout();
+    res.status(200).send({message: "You have logged out!"});
+});
 
 passport.use(new CognitoStrategy({
-    userPoolId: 'us-east-1_fRP0fBX5F',
-    clientId: '32u06n68ta7fjrue4lp64oo90h'
+    userPoolId: poolData.UserPoolId,
+    clientId: poolData.ClientId
 }, (accessToken, idToken, refreshToken, user, done) => {
     process.nextTick(()=>{
         done(null ,user);
@@ -45,10 +61,6 @@ router.post('/login', passport.authenticate('cognito', {
 }));
 
 router.post('/register', (req, res) => {
-    const poolData = {
-        UserPoolId : 'us-east-1_fRP0fBX5F',
-        ClientId: '32u06n68ta7fjrue4lp64oo90h'
-    }
     const userPool = new amazonCognito.CognitoUserPool(poolData);
     let attributeList = [];
     const dataName = {
@@ -82,11 +94,6 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/confirm',(req, res)=>{
-    const poolData = {
-        UserPoolId : 'us-east-1_fRP0fBX5F',
-        ClientId: '32u06n68ta7fjrue4lp64oo90h'
-    }
-
     const userPool = new amazonCognito.CognitoUserPool(poolData);
     const userData = {
         Username : req.body.username,
