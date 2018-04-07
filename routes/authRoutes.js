@@ -7,9 +7,12 @@ const {poolData}  = require('../config/userPool');
 
 const router = express.Router();
 
+// Saving user data in session
 passport.serializeUser((user, done) => {
     done(null ,user);
 });
+
+// Retrieving user data from session
 passport.deserializeUser((user, done) => {
     try {
         done(null, user);
@@ -18,6 +21,7 @@ passport.deserializeUser((user, done) => {
     }
 });
 
+// GET Route "/auth/current-user" to check currently logged in user
 router.get('/current-user', (req ,res)=> {
     if(!req.user){
         return res.status(401).send({message: 'You are not logged in!'});
@@ -25,14 +29,17 @@ router.get('/current-user', (req ,res)=> {
     res.send(req.user);
 });
 
+// GET Route for successful user login
 router.get('/success', (req, res) => {
     res.status(200).send({user:req.user,message: "You are successfully logged in!"})
 });
 
+// GET Route for login failed
 router.get('/fail', (req,res)=>{
     res.status(400).send({errors:req.flash('error')});
 });
 
+// GET Route "/auth/logout" for logging user out
 router.get('/logout', (req, res)=>{
     const userPool = new amazonCognito.CognitoUserPool(poolData);
     const userData = {
@@ -45,6 +52,8 @@ router.get('/logout', (req, res)=>{
     res.status(200).send({message: "You have logged out!"});
 });
 
+// POST Route "/auth/login" for logging user in
+// Send a POST request to this route with username, password as data payload
 passport.use(new CognitoStrategy({
     userPoolId: poolData.UserPoolId,
     clientId: poolData.ClientId
@@ -53,13 +62,14 @@ passport.use(new CognitoStrategy({
         done(null ,user);
     });
 }));
-
 router.post('/login', passport.authenticate('cognito', {
     successRedirect: '/auth/success',
     failureRedirect: '/auth/fail',
     failureFlash: true
 }));
 
+// POST Route "/auth/register" for registering new users
+// Send a POST request to this route with name,email,username,password as data payload
 router.post('/register', (req, res) => {
     const userPool = new amazonCognito.CognitoUserPool(poolData);
     let attributeList = [];
@@ -93,6 +103,8 @@ router.post('/register', (req, res) => {
     })
 });
 
+// POST Route "auth/confirm" for confirmation of account
+// Send a POST request to this route with username, code as data payload
 router.post('/confirm',(req, res)=>{
     const userPool = new amazonCognito.CognitoUserPool(poolData);
     const userData = {

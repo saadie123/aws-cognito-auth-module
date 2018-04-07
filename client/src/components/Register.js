@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {Redirect} from 'react-router-dom';
+import axios from 'axios';
+
 
 class Register extends Component {
 
@@ -8,7 +11,9 @@ class Register extends Component {
             email: '',
             username: '',
             password: ''
-        }
+        },
+        successCode:'',
+        message: ''
     }
 
     inputChangeHandler = (e, inputName) => {
@@ -20,12 +25,21 @@ class Register extends Component {
     }
     onRegister = (e) => {
         e.preventDefault();
-        console.log(this.state.registerForm);
+        axios.post('/auth/register',this.state.registerForm).then(response=>{
+            this.setState({successCode: response.status, message: response.data.message});
+        }).catch(error=>{
+            console.log(error.response);
+        })
     }
 
     render(){
+        let redirect = null;
+        if(this.state.successCode == 201 ){
+            redirect = <Redirect to='/confirm' />
+        }
         return(
             <div className="row">
+            {redirect}
                     <div className="col-md-6">
                     <h1 className="page-header">Register</h1>
                         <form action="">
@@ -45,7 +59,7 @@ class Register extends Component {
                                 <label htmlFor="password">Password</label>
                                 <input type="password" onChange={(event) => this.inputChangeHandler(event,'password')} className="form-control"/>
                             </div>
-                            <div>Password must have atleast:</div>
+                            <div>Password must have:</div>
                             <ul>
                                 <li>one uppercase letter</li>
                                 <li>one lowercase letter</li>
